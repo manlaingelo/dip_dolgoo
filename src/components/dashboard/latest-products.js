@@ -80,7 +80,13 @@ export const LatestProducts = (props) => (
         p: 2,
       }}
     >
-      <Button color="primary" endIcon={<ArrowRightIcon />} size="small" variant="text">
+      <Button
+        color="primary"
+        endIcon={<ArrowRightIcon />}
+        size="small"
+        variant="text"
+        href="/posts"
+      >
         Бүгдийг харах
       </Button>
     </Box>

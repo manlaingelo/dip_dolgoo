@@ -1,48 +1,80 @@
+import React, { useState } from "react";
 import Head from "next/head";
-import { Box, Container, Grid } from "@mui/material";
-import { TotalProducts } from "../components/dashboard/total-products";
-import { LatestListings } from "../components/dashboard/latest-listings";
-import { LatestProducts } from "../components/dashboard/latest-products";
-import { Sales } from "../components/dashboard/sales";
-import { TasksProgress } from "../components/dashboard/tasks-progress";
-import { TotalCustomers } from "../components/dashboard/total-customers";
-import { TotalProfit } from "../components/dashboard/total-profit";
-import { TrafficByDevice } from "../components/dashboard/traffic-by-device";
-import { DashboardLayout } from "../components/dashboard-layout";
+import { Typography, Container, Grid } from "@mui/material";
+import Navbar from "../components/main/navbar";
 
-const Dashboard = () => (
-  <>
-    <Head>
-      <title>Админ самбар</title>
-    </Head>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8,
-      }}
-    >
-      <Container maxWidth={false}>
-        <Grid container spacing={3}>
-          <Grid item lg={6} sm={6} xl={6} xs={12}>
-            <TotalProducts />
-          </Grid>
-          <Grid item xl={6} lg={6} sm={6} xs={12}>
-            <TotalCustomers />
-          </Grid>
+import MainFeaturedPost from "../components/main/MainFeaturedPost";
+import FeaturedPost from "../components/main/FeaturedPost";
 
-          <Grid item lg={4} md={6} xl={3} xs={12}>
-            <LatestProducts sx={{ height: "100%" }} />
+const mainFeaturedPost = {
+  title: "Title of a longer featured blog post",
+  description:
+    "Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.",
+  image: "https://source.unsplash.com/random",
+  imageText: "main image description",
+  linkText: "Бүртгүүлэх",
+};
+
+const featuredPosts = [
+  {
+    title: "Featured post",
+    date: "Nov 12",
+    description:
+      "This is a wider card with supporting text below as a natural lead-in to additional content.",
+    image: "https://source.unsplash.com/random",
+    imageLabel: "Image Text",
+  },
+  {
+    title: "Post title",
+    date: "Nov 11",
+    description:
+      "This is a wider card with supporting text below as a natural lead-in to additional content.",
+    image: "https://source.unsplash.com/random",
+    imageLabel: "Image Text",
+  },
+];
+
+const Landing = () => {
+  return (
+    <>
+      <Head>
+        <title>Үл хөдлөх хөрөнгө зуучлалын веб</title>
+      </Head>
+      <Navbar />
+      <Container maxWidth="lg">
+        <main>
+          <MainFeaturedPost post={mainFeaturedPost} />
+          <Typography
+            component="h2"
+            variant="h5"
+            color="inherit"
+            align="center"
+            noWrap
+            sx={{ my: 5 }}
+          >
+            Сүүлд нэмэгдсэн
+          </Typography>
+          <Grid container spacing={4}>
+            {featuredPosts.map((post) => (
+              <FeaturedPost key={post.title} post={post} />
+            ))}
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
-            <LatestListings />
-          </Grid>
-        </Grid>
+          <Typography
+            component="h2"
+            variant="h5"
+            color="inherit"
+            align="center"
+            noWrap
+            sx={{ my: 5 }}
+          >
+            Манай үйлчилгээ
+          </Typography>
+        </main>
       </Container>
-    </Box>
-  </>
-);
+    </>
+  );
+};
 
-Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Landing.getLayout = (page) => <>{page}</>;
 
-export default Dashboard;
+export default Landing;

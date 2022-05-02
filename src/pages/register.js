@@ -64,7 +64,7 @@ const Register = () => {
     <>
       <Head>
         <title>
-          Register | Material Kit
+         Бүртгүүлэх хэсэг
         </title>
       </Head>
       <Box
@@ -85,7 +85,7 @@ const Register = () => {
               component="a"
               startIcon={<ArrowBackIcon fontSize="small" />}
             >
-              Dashboard
+              Нүүр хуудас
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
@@ -94,21 +94,21 @@ const Register = () => {
                 color="textPrimary"
                 variant="h4"
               >
-                Create a new account
+                Шинээр бүртгэл үүсгэх
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
               >
-                Use your email to create a new account
+                Цахим шуудан болон утасны дугаараа оруулан шинэ хаяг үүсгэнэ үү.
               </Typography>
             </Box>
             <TextField
               error={Boolean(formik.touched.firstName && formik.errors.firstName)}
               fullWidth
               helperText={formik.touched.firstName && formik.errors.firstName}
-              label="First Name"
+              label="Нэр"
               margin="normal"
               name="firstName"
               onBlur={formik.handleBlur}
@@ -120,7 +120,7 @@ const Register = () => {
               error={Boolean(formik.touched.lastName && formik.errors.lastName)}
               fullWidth
               helperText={formik.touched.lastName && formik.errors.lastName}
-              label="Last Name"
+              label="Овог"
               margin="normal"
               name="lastName"
               onBlur={formik.handleBlur}
@@ -132,7 +132,7 @@ const Register = () => {
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
               helperText={formik.touched.email && formik.errors.email}
-              label="Email Address"
+              label="Цахим шуудан"
               margin="normal"
               name="email"
               onBlur={formik.handleBlur}
@@ -145,7 +145,7 @@ const Register = () => {
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
-              label="Password"
+              label="Нууц үг"
               margin="normal"
               name="password"
               onBlur={formik.handleBlur}
@@ -170,7 +170,7 @@ const Register = () => {
                 color="textSecondary"
                 variant="body2"
               >
-                I have read the
+                Зөвшөөрч байна.
                 {' '}
                 <NextLink
                   href="#"
@@ -200,14 +200,14 @@ const Register = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign Up Now
+                Бүртгүүлэх
               </Button>
             </Box>
             <Typography
               color="textSecondary"
               variant="body2"
             >
-              Have an account?
+              Хаягтай юу?
               {' '}
               <NextLink
                 href="/login"
@@ -217,7 +217,7 @@ const Register = () => {
                   variant="subtitle2"
                   underline="hover"
                 >
-                  Sign In
+                  Нэвтрэх
                 </Link>
               </NextLink>
             </Typography>
