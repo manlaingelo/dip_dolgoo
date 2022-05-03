@@ -17,6 +17,35 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Register = () => {
   const router = useRouter();
+
+  const login = async (values) => {
+    console.log("!!!Sdaaa");
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      email: values.email,
+      password: values.password,
+      phone: values.phone,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://192.168.0.110:8081/api/users", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.accessToken);
+        localStorage.setItem("accessToken", result.accessToken);
+        router.push("/dashboard");
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -38,8 +67,8 @@ const Register = () => {
         .max(255)
         .required(
           'First name is required'),
-      lastName: Yup
-        .string()
+      phone: Yup
+        .number()
         .max(255)
         .required(
           'Last name is required'),
@@ -56,7 +85,8 @@ const Register = () => {
         )
     }),
     onSubmit: () => {
-      router.push('/');
+      // router.push('/');
+      console.log("sdaaa")
     }
   });
 
@@ -104,30 +134,7 @@ const Register = () => {
                 Цахим шуудан болон утасны дугаараа оруулан шинэ хаяг үүсгэнэ үү.
               </Typography>
             </Box>
-            <TextField
-              error={Boolean(formik.touched.firstName && formik.errors.firstName)}
-              fullWidth
-              helperText={formik.touched.firstName && formik.errors.firstName}
-              label="Нэр"
-              margin="normal"
-              name="firstName"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.firstName}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.lastName && formik.errors.lastName)}
-              fullWidth
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              label="Овог"
-              margin="normal"
-              name="lastName"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.lastName}
-              variant="outlined"
-            />
+            
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
@@ -139,6 +146,18 @@ const Register = () => {
               onChange={formik.handleChange}
               type="email"
               value={formik.values.email}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+              fullWidth
+              helperText={formik.touched.lastName && formik.errors.lastName}
+              label="Утасны дугаар"
+              margin="normal"
+              name="phone"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.phone}
               variant="outlined"
             />
             <TextField

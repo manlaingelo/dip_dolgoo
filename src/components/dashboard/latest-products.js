@@ -85,7 +85,7 @@ export const LatestProducts = (props) => (
         endIcon={<ArrowRightIcon />}
         size="small"
         variant="text"
-        href="/posts"
+        href="/products"
       >
         Бүгдийг харах
       </Button>

@@ -4,6 +4,7 @@
   "licence": "MIT",
   "version": "2.0.0",
   "private": false,
+  "proxy": "http://192.168.0.110:8081/api",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -24,6 +25,7 @@
     "axios": "^0.27.2",
     "chart.js": "^3.5.1",
     "date-fns": "^2.25.0",
+    "embla-carousel-react": "^6.2.0",
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "next": "^12.0.3-canary.7",
@@ -39,6 +41,5 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-next": "12.0.3-canary.7"
-  },
-  "proxy": "http://192.168.0.110:8081/api"
+  }
 }

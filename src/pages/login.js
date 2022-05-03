@@ -5,24 +5,34 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
 
 const Login = () => {
   const router = useRouter();
   const login = async (values) => {
-    console.log("!!!Sdaaa")
-    return await axios
-      .post(
-        "/auth/login",
-        { email: values.email, password: values.password },
-      )
-      .then((res) => {
-        console.log(res);
-        // router.push("/");
+    console.log("!!!Sdaaa");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      email: values.email,
+      password: values.password,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://192.168.0.110:8081/api/auth/login", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.accessToken);
+        localStorage.setItem("accessToken", result.accessToken);
+        router.push("/dashboard");
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((error) => console.log("error", error));
   };
   const formik = useFormik({
     initialValues: {
@@ -34,7 +44,7 @@ const Login = () => {
       password: Yup.string().max(255).required("Заавал оруулах"),
     }),
     onSubmit: (values) => {
-      login(values)
+      login(values);
     },
   });
 

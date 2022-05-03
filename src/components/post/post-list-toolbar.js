@@ -131,7 +131,7 @@ export const PostListToolbar = (props) => {
                   size="small"
                   aria-controls={open ? "split-button-menu" : undefined}
                   aria-expanded={open ? "true" : undefined}
-                  aria-label="select merge strategy"
+                  aria-label="select location"
                   aria-haspopup="menu"
                   onClick={handleToggle}
                 >
@@ -155,13 +155,13 @@ export const PostListToolbar = (props) => {
                   >
                     <Paper>
                       <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList id="split-button-menu" autoFocusItem>
+                        <MenuList id="split-button-menu" sx={{ zIndex: "tooltip" }} style={{zIndex: '100'}} autoFocusItem>
                           {options.map((option, index) => (
                             <MenuItem
                               key={option}
-                              disabled={index === 2}
                               selected={index === selectedIndex}
                               onClick={(event) => handleMenuItemClick(event, index)}
+                              sx={{zIndex: 'tooltip'}}
                             >
                               {option}
                             </MenuItem>
