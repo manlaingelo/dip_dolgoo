@@ -1,41 +1,52 @@
-import * as React from "react";
 import NextLink from "next/link";
-import PropTypes from "prop-types";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-// import IconButton from "@mui/material/IconButton";
-// import SearchIcon from "@mui/icons-material/Search";
-import Typography from "@mui/material/Typography";
+import { Stack, Button, Container, Typography, Toolbar } from "@mui/material";
 import { Logo } from "../logo";
 
 function Navbar() {
   return (
-    <React.Fragment>
-      <Toolbar sx={{ borderBottom: 1, borderColor: "divider" }}>
-        {/* <Button size="small">Зарууд</Button> */}
-        <Typography
-          component="h2"
-          variant="h5"
-          color="inherit"
-          align="center"
-          noWrap
-          sx={{ flex: 1 }}
-        >
-          <Logo />
-        </Typography>
-        {/* <IconButton>
+    <>
+      <header style={{ borderBottom: "1px solid #ebebeb" }}>
+        <Container sx={{}}>
+          <Toolbar
+            sx={{
+              padding: 0,
+              margin: 0,
+              justifyContent: "space-between",
+            }}
+          >
+            {/* <Button size="small">Зарууд</Button> */}
+
+            <NextLink href="/" passHref>
+              <Typography
+                component="h2"
+                variant="h5"
+                color="inherit"
+                sx={{
+                  display: "flex",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  justifyItems: "center",
+                }}
+              >
+                <Logo />
+                <span style={{ marginY: "auto", marginLeft: "1rem" }}>RealEstate</span>
+              </Typography>
+            </NextLink>
+            {/* <IconButton>
           <SearchIcon />
         </IconButton> */}
 
-        <NextLink href="/login" passHref>
-          <a style={{ textDecoration: "none" }}>
-            <Button variant="outlined" size="small" >
-              Нэвтрэх
-            </Button>
-          </a>
-        </NextLink>
-      </Toolbar>
-    </React.Fragment>
+            <NextLink href="/login" passHref>
+              <a style={{ textDecoration: "none" }}>
+                <Button variant="outlined" size="small">
+                  Нэвтрэх
+                </Button>
+              </a>
+            </NextLink>
+          </Toolbar>
+        </Container>
+      </header>
+    </>
   );
 }
 

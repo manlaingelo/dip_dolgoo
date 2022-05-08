@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { v4 as uuid } from "uuid";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
@@ -15,7 +14,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { SeverityPill } from "../severity-pill";
 
 const listings = [
   {
@@ -139,6 +137,7 @@ export const LatestListings = (props) => (
         endIcon={<ArrowRightIcon fontSize="small" />}
         size="small"
         variant="text"
+        href="/products"
       >
         Бүгдийг харах
       </Button>

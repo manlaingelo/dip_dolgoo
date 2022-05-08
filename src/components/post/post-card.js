@@ -1,25 +1,22 @@
 import PropTypes from "prop-types";
 import NextLink from "next/link";
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
   CardMedia,
-  CardActions,
   Divider,
   Grid,
   Typography,
-  IconButton,
 } from "@mui/material";
 import { Clock as ClockIcon } from "../../icons/clock";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export const PostCard = ({ post, ...rest }) => (
   <Card
     sx={{
       display: "flex",
       height: "100%",
+      maxHeight: "250px",
     }}
     {...rest}
   >
@@ -34,11 +31,12 @@ export const PostCard = ({ post, ...rest }) => (
       <NextLink href={`/posts/${post.id}`} passHref>
         <a style={{ textDecoration: "none" }}>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div" color="text.primary">
-              {post.title}
+            <Typography gutterBottom component="h5" color="text.primary" sx={{ fontWeight: 'bold', fontSize: 16 }}>
+              {post.title.substring(0, 35)}
+              {post.title.length > 35 && "..."}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {post.description.substring(0, 150)}
+              {post.description.substring(0, 50)}
               {post.description.length > 150 && "..."}
             </Typography>
           </CardContent>

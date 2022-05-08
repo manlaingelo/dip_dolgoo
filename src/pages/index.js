@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { Typography, Container, Grid } from "@mui/material";
+import { Typography, Container, Grid, Box, Pagination } from "@mui/material";
 import Navbar from "../components/main/navbar";
+import { PostCard } from "../components/post/post-card";
+import MainSearchBar from "../components/main/main-search-bar";
+import { products } from "../__mocks__/products";
 
 import MainFeaturedPost from "../components/main/MainFeaturedPost";
 import FeaturedPost from "../components/main/FeaturedPost";
+
+// const PAGE_SIZE = 21
 
 const mainFeaturedPost = {
   title: "Title of a longer featured blog post",
@@ -35,6 +40,23 @@ const featuredPosts = [
 ];
 
 const Landing = () => {
+  const [pageCount, setPageCount] = useState(3);
+  const [posts, setPosts] = useState(products);
+  const [postsCount, setPostsCount] = useState(32);
+  const handleChangePage = (event, value) => {
+    console.log(value);
+    const nextPagePosts = posts;
+    setPosts(nextPagePosts.reverse());
+  };
+
+  const handleSearch = (area, price, location, searchValue) => {
+    console.log(area, price, location, searchValue);
+  };
+
+  useEffect(() => {
+    // fetch data form backend
+    console.log(posts);
+  }, [posts]);
   return (
     <>
       <Head>
@@ -43,7 +65,51 @@ const Landing = () => {
       <Navbar />
       <Container maxWidth="lg">
         <main>
-          <MainFeaturedPost post={mainFeaturedPost} />
+          <MainSearchBar getSearchValues={handleSearch} />
+          <Typography gutterBottom variant="h5" component="div" mt={3}>
+            Олдсон зарууд{" "}
+            <span style={{ fontSize: "12px", color: "#65748b" }}>
+              (хайлтад {postsCount} тохирсон)
+            </span>
+          </Typography>
+          <Box sx={{ pt: 3 }}>
+            <Grid container spacing={4}>
+              {posts.map((post) => (
+                <Grid item key={post.id} xs={12} md={6}>
+                  <PostCard post={post} />
+                </Grid>
+              ))}
+            </Grid>
+            {/* <Grid container spacing={4}>
+                <Grid item xs={12} md={6}>
+                  <Grid container spacing={6}>
+                    {posts.map((post) => (
+                      <Grid item key={post.id} xs={12} md={6}>
+                        <PostCard post={post} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  Feature
+                </Grid>
+              </Grid> */}
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              pt: 3,
+            }}
+          >
+            <Pagination
+              color="primary"
+              count={pageCount}
+              size="small"
+              onChange={handleChangePage}
+            />
+          </Box>
+          <MainFeaturedPost post={posts[1]} />
           <Typography
             component="h2"
             variant="h5"
