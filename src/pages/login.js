@@ -25,7 +25,7 @@ const Login = () => {
       redirect: "follow",
     };
 
-    fetch("http://192.168.0.110:8081/api/auth/login", requestOptions)
+    fetch("http://192.168.1.57:8081/api/auth/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result.accessToken);
@@ -108,7 +108,7 @@ const Login = () => {
               variant="outlined"
             />
             <Box sx={{ py: 2 }}>
-              <Button color="primary" fullWidth size="large" type="submit" variant="contained">
+              <Button color="primary" size="large" type="submit" variant="contained" fullWidth>
                 Нэвтрэх
               </Button>
             </Box>
