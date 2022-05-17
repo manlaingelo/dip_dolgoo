@@ -8,7 +8,7 @@ import { products } from "../__mocks__/products";
 
 import MainFeaturedPost from "../components/main/MainFeaturedPost";
 import FeaturedPost from "../components/main/FeaturedPost";
-
+import axios from "axios";
 // const PAGE_SIZE = 21
 
 const mainFeaturedPost = {
@@ -39,9 +39,32 @@ const featuredPosts = [
   },
 ];
 
-const Landing = () => {
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const token =
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ZmQ1N2I0Zi1lYTE0LTQ1MWQtOGFmZC02OGI2YWNkNzhhYzAiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY1Mjc5NDU3NSwiZXhwIjoxNjU0MjY1ODA0fQ.EKulCJVV07-fBDg0GJ9cQBs3uAvi0ian2S9rrL52uFc";
+
+  console.log(token);
+  const apiURL = `http://localhost:8081/api/posts?maxArea=100&maxPrice=10000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=20`;
+  const res = await fetch(apiURL, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${token}`, // notice the Bearer before your token
+    },
+  });
+  const data = await res.json();
+  console.log(data);
+
+  // Pass data to the page via props
+  return { props: { data } };
+}
+
+const Landing = ({ data }) => {
+  console.log(data);
   const [pageCount, setPageCount] = useState(3);
   const [posts, setPosts] = useState(products);
+  const [temp, setTemp] = useState([]);
   const [postsCount, setPostsCount] = useState(32);
   const handleChangePage = (event, value) => {
     console.log(value);
@@ -55,7 +78,15 @@ const Landing = () => {
 
   useEffect(() => {
     // fetch data form backend
-    console.log(posts);
+    // const apiEndPoint =
+    //   "/api/posts?maxArea=100&maxPrice=10000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=20";
+    // const getPosts = async () => {
+    //   const { data: res } = await axios.get(apiEndPoint);
+    //   setTemp(res);
+    //   console.log(res);
+    // };
+    // getPosts();
+    // console.log(temp);
   }, [posts]);
   return (
     <>

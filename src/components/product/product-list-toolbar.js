@@ -6,34 +6,28 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  Typography
-} from '@mui/material';
-import { Download as DownloadIcon } from '../../icons/download';
-import { Search as SearchIcon } from '../../icons/search';
-import { Upload as UploadIcon } from '../../icons/upload';
+  Typography,
+} from "@mui/material";
+import { Download as DownloadIcon } from "../../icons/download";
+import { Search as SearchIcon } from "../../icons/search";
+import { Upload as UploadIcon } from "../../icons/upload";
 
 export const ProductListToolbar = (props) => (
   <Box {...props}>
     <Box
       sx={{
-        alignItems: 'center',
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        m: -1
+        alignItems: "center",
+        display: "flex",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        m: -1,
       }}
     >
-      <Typography
-        sx={{ m: 1 }}
-        variant="h4"
-      >
+      <Typography sx={{ m: 1 }} variant="h4">
         Зарууд
       </Typography>
       <Box sx={{ m: 1 }}>
-        <Button
-          color="primary"
-          variant="contained"
-        >
+        <Button color="primary" variant="contained" onClick={props.handleOpen}>
           Зар нэмэх
         </Button>
       </Box>
@@ -47,14 +41,11 @@ export const ProductListToolbar = (props) => (
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon
-                      fontSize="small"
-                      color="action"
-                    >
+                    <SvgIcon fontSize="small" color="action">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
-                )
+                ),
               }}
               placeholder="Зар хайх"
               variant="outlined"

@@ -1,19 +1,122 @@
 import Head from "next/head";
-import { useState } from "react";
-import { Box, Container, Grid, Pagination } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Pagination,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  Button,
+  TextField,
+} from "@mui/material";
 import { products } from "../__mocks__/products";
 import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { ProductCard } from "../components/product/product-card";
 import { DashboardLayout } from "../components/dashboard-layout";
 
-// const PAGE_SIZE = 21
+const PAGE_SIZE = 6;
 
 const Products = () => {
   const [pageCount, setPageCount] = useState(3);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [post, setPost] = useState({});
+  const [message, setMessage] = useState("");
+
+  // getters
+  const getPosts = () => {
+    const token = localStorage.getItem("accesToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {};
+
+    const raw = JSON.stringify(setterData);
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+    fetch("/api/posts/get", requestOptions)
+      .then((response) => {
+        console.log(response.status);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  // handlers
+  const handleClose = () => {
+    setIsCreateOpen(false);
+  };
+  const handleCreate = () => {
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {
+      ...post,
+      postImages: [
+        {
+          id: 0,
+          image: `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>`,
+          post: {
+            address: post.address,
+            area: post.area,
+            createdDate: "2022-05-17T15:56:55.260Z",
+            description: post.description,
+            id: "string",
+            modifiedDate: "2022-05-17T15:56:55.260Z",
+            postImages: [null],
+            postTypes: ["POST_PLACE"],
+            price: post.price,
+            rooms: post.price,
+            title: post.title,
+          },
+          poster: true,
+        },
+      ],
+    };
+    const raw = JSON.stringify(setterData);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    // console.log(post);
+    fetch("/api/posts/create", requestOptions)
+      .then((response) => {
+        console.log(response.status);
+        if (response.status === 201) {
+          setMessage("Амжилттай.");
+        } else {
+          setMessage("Амжилтгүй, Ахин оролдоно уу.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const handlePostChange = (e) => {
+    console.log(e.target.value);
+    let formData = post;
+    console.log(formData);
+    data[e.target.name] = e.target.value;
+    setPost(formData);
+  };
 
   const handleChangePage = (e, value) => {
     console.log(value);
   };
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
   return (
     <>
       <Head>
@@ -27,7 +130,7 @@ const Products = () => {
         }}
       >
         <Container maxWidth={false}>
-          <ProductListToolbar />
+          <ProductListToolbar handleOpen={() => setIsCreateOpen(true)} />
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>
               {products.map((product) => (
@@ -53,6 +156,51 @@ const Products = () => {
           </Box>
         </Container>
       </Box>
+      <Dialog open={isCreateOpen} onClose={handleClose} maxWidth={"md"}>
+        <DialogTitle>Зар нэмэх</DialogTitle>
+        <DialogContent>
+          <Grid sx={{ py: 3 }} spacing={2} container>
+            <Grid xs={12} item>
+              <TextField
+                onChange={handlePostChange}
+                name="title"
+                label="Гарчиг"
+                autoFocus
+                fullWidth
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <TextField
+                onChange={handlePostChange}
+                name="description"
+                label="Дэлгэрэнгүй"
+                fullWidth
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <TextField onChange={handlePostChange} name="address" label="Хаяг" fullWidth />
+            </Grid>
+            <Grid xs={12} item>
+              <TextField onChange={handlePostChange} name="area" label="Хэмжээ" fullWidth />
+            </Grid>
+            {/* <Grid xs={12} item>
+              <TextField name="postType" label="төрөл" fullWidth />
+            </Grid> */}
+            <Grid xs={12} item>
+              <TextField onChange={handlePostChange} name="price" label="Үнэ" fullWidth />
+            </Grid>
+            <Grid xs={12} item>
+              <TextField onChange={handlePostChange} name="rooms" label="Өрөөний тоо" fullWidth />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button color="inherit" onClick={handleClose}>
+            Цуцлах
+          </Button>
+          <Button onClick={handleCreate}>Нэмэх</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

@@ -9,7 +9,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const Login = () => {
   const router = useRouter();
   const login = async (values) => {
-    console.log("!!!Sdaaa");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -22,15 +21,18 @@ const Login = () => {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow",
     };
 
-    fetch("http://192.168.1.57:8081/api/auth/login", requestOptions)
+    fetch("/api/login", requestOptions)
       .then((response) => response.json())
-      .then((result) => {
-        console.log(result.accessToken);
-        localStorage.setItem("accessToken", result.accessToken);
-        router.push("/dashboard");
+      .then((data) => {
+        const { user } = data;
+        console.log(user);
+        localStorage.setItem("accessToken", user.accessToken);
+        const userRole = user.roles[0];
+
+        if (userRole === "ROLE_ADMIN") router.push("/admin");
+        else router.push("/dashboard");
       })
       .catch((error) => console.log("error", error));
   };

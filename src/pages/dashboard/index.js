@@ -10,10 +10,29 @@ import { TotalProfit } from "../../components/dashboard/total-profit";
 import { TrafficByDevice } from "../../components/dashboard/traffic-by-device";
 import { DashboardLayout } from "../../components/dashboard-layout";
 
-const Dashboard = () => (
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const token =
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwYTVlMzIxYS1iYjcxLTRmMTgtYWNkNC01MjI4NDQzMjcxMmEiLCJhdXRoIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjUyODAyMDAxLCJleHAiOjE2NTQyNzMyMzB9.OUtQMNNRPCCKFzOOZljK51MJgTRJoeA9NZgCdlOpMuA";
+  const apiURL = `http://localhost:8081/api/posts?maxArea=100&maxPrice=10000000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=0`;
+  const res = await fetch(apiURL, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${token}`, // notice the Bearer before your token
+    },
+  });
+  const data = await res.json();
+  console.log(data);
+
+  // Pass data to the page via props
+  return { props: { data } };
+}
+
+const Dashboard = ({ data }) => (
   <>
     <Head>
-      <title>Админ самбар</title>
+      <title>Хэрэглэгчийн самбар</title>
     </Head>
     <Box
       component="main"
@@ -24,20 +43,15 @@ const Dashboard = () => (
     >
       <Container maxWidth={false}>
         <Grid container spacing={3}>
-          <Grid item lg={6} sm={6} xl={6} xs={12}>
-            <TotalProducts />
-          </Grid>
-          <Grid item xl={6} lg={6} sm={6} xs={12}>
-            <TotalCustomers />
+          <Grid item xs={12}>
+            <TotalProducts totalElements={data?.totalElements} />
           </Grid>
 
-          <Grid item lg={4} md={6} xl={3} xs={12}>
+          <Grid item xs={12}>
             <LatestProducts sx={{ height: "100%" }} />
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
-            <LatestListings />
-          </Grid>
         </Grid>
+        <pre>{}</pre>
       </Container>
     </Box>
   </>

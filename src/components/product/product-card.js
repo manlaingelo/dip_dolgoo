@@ -86,6 +86,7 @@ const MoreMenu = (props) => {
           <ListItemText primary="Засах" primaryTypographyProps={{ variant: "body2" }} />
         </MenuItem>
       </Menu>
+      
       <Dialog open={isOpenUpdate} onClose={handleClose}>
         <DialogTitle>Зар засах</DialogTitle>
         <DialogContent>
@@ -155,6 +156,7 @@ const MoreMenu = (props) => {
           <Button onClick={handleUpdate}>Засах</Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={isOpenDelete} onClose={handleClose}>
         <DialogTitle>Зар устгах</DialogTitle>
         <DialogContent>

@@ -2,6 +2,7 @@ import Head from "next/head";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 import {
   Box,
@@ -17,10 +18,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Register = () => {
   const router = useRouter();
+  const [message, setMessage] = useState("");
 
   const register = async (values) => {
     console.log("!!!Sdaaa");
-    var myHeaders = new Headers();
+    var myHeaders = new Headers({
+      "Access-Control-Allow-Origin": "*",
+    });
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
@@ -28,18 +32,18 @@ const Register = () => {
       password: values.password,
       phone: values.phone,
     });
-    console.log(raw);
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
     };
 
-    fetch("http://192.168.1.57:8081/api/users", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        // router.push("/login");
+    fetch("/api/register", requestOptions)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 201) {
+          setMessage("Амжилттай бүртгэл хийгдлээ.");
+        }
       })
       .catch((error) => console.log("error", error));
   };
@@ -130,9 +134,13 @@ const Register = () => {
               variant="outlined"
             />
             <Box sx={{ py: 2 }}>
-              <Button color="primary" fullWidth size="large" type="submit" variant="contained">
-                Бүртгүүлэх
-              </Button>
+              {message ? (
+                message
+              ) : (
+                <Button color="primary" fullWidth size="large" type="submit" variant="contained">
+                  Бүртгүүлэх
+                </Button>
+              )}
             </Box>
             <Typography color="textSecondary" variant="body2">
               Хаягтай юу?{" "}

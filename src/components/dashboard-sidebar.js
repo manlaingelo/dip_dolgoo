@@ -23,11 +23,6 @@ const items = [
     title: 'Самбар'
   },
   {
-    href: '/customers',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Хэрэглэгчид'
-  },
-  {
     href: '/products',
     icon: (<ShoppingBagIcon fontSize="small" />),
     title: 'Зарууд'
