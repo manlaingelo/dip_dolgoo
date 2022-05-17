@@ -32,7 +32,7 @@ export const CustomerListToolbar = (props) => (
     </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
-        <CardContent>
+        <CardContent sx={{ display: "flex" }}>
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
@@ -49,6 +49,9 @@ export const CustomerListToolbar = (props) => (
               variant="outlined"
             />
           </Box>
+          <Button sx={{ ml: 3 }} variant="contained">
+            Search
+          </Button>
         </CardContent>
       </Card>
     </Box>

@@ -41,9 +41,54 @@ const MoreMenu = (props) => {
 
   const handleDelete = () => {
     console.log("delete");
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {
+      id: product.id,
+    };
+    const raw = JSON.stringify(setterData);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    // console.log(post);
+    fetch("/api/posts/delete", requestOptions)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log("error", error));
   };
+
   const handleUpdate = () => {
-    console.log("update");
+    console.log("update", product);
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {
+      ...product,
+    };
+    const raw = JSON.stringify(setterData);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    // console.log(post);
+    fetch("/api/posts/update", requestOptions)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log("error", error));
   };
 
   const handleClose = () => {
@@ -86,7 +131,7 @@ const MoreMenu = (props) => {
           <ListItemText primary="Засах" primaryTypographyProps={{ variant: "body2" }} />
         </MenuItem>
       </Menu>
-      
+
       <Dialog open={isOpenUpdate} onClose={handleClose}>
         <DialogTitle>Зар засах</DialogTitle>
         <DialogContent>
@@ -96,7 +141,7 @@ const MoreMenu = (props) => {
             margin="dense"
             id="title"
             label="Гарчиг"
-            type="email"
+            type="text"
             value={product.title}
             onChange={(e) => {
               setProduct({
@@ -116,7 +161,7 @@ const MoreMenu = (props) => {
             margin="dense"
             id="description"
             label="Дэлгэрэнгүй"
-            type="email"
+            type="text"
             fullWidth
           />
           <TextField
@@ -130,7 +175,7 @@ const MoreMenu = (props) => {
             margin="dense"
             id="price-edit"
             label="Үнэ"
-            type="email"
+            type="text"
             fullWidth
           />
           <TextField
@@ -144,10 +189,37 @@ const MoreMenu = (props) => {
             margin="dense"
             id="area-edit"
             label="Талбай"
-            type="email"
+            type="text"
             fullWidth
           />
-          <span>upload image feature</span>
+          <TextField
+            value={product.address}
+            onChange={(e) => {
+              setProduct({
+                ...product,
+                address: e.target.value,
+              });
+            }}
+            margin="dense"
+            id="address-edit"
+            label="Хаяг"
+            type="text"
+            fullWidth
+          />
+          <TextField
+            value={product.rooms}
+            onChange={(e) => {
+              setProduct({
+                ...product,
+                rooms: e.target.value,
+              });
+            }}
+            margin="dense"
+            id="rooms-edit"
+            label="Өрөө"
+            type="text"
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={handleClose}>

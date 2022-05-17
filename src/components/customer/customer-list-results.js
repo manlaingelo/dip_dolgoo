@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { useEffect, useState } from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import PropTypes from "prop-types";
+import { format } from "date-fns";
 import {
   Avatar,
   Box,
@@ -13,14 +13,58 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
-} from '@mui/material';
-import { getInitials } from '../../utils/get-initials';
+  Typography,
+} from "@mui/material";
+import { getInitials } from "../../utils/get-initials";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
+const ROWS_PER_PAGE = 5;
+
+export const CustomerListResults = ({ ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
+  const [customers, setCustomers] = useState([]);
+  const [limit, setLimit] = useState(ROWS_PER_PAGE);
   const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
+
+  // getters
+
+  const getCustomers = () => {
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {
+      page,
+      searchValue,
+      size: ROWS_PER_PAGE,
+    };
+    const raw = JSON.stringify(setterData);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    // console.log(post);
+    fetch("/api/customers/get", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        const { users } = data;
+        setCustomers(users.content);
+        setTotalElements(users.totalElements)
+        console.log(users);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    getCustomers();
+  }, [page]);
+
+  // handlers
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -71,34 +115,24 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedCustomerIds.length === customers?.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                      selectedCustomerIds.length > 0 &&
+                      selectedCustomerIds.length < customers?.length
                     }
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell>
-                  Нэр
-                </TableCell>
-                <TableCell>
-                  Цахим шуудан
-                </TableCell>
-                <TableCell>
-                  Хаяг
-                </TableCell>
-                <TableCell>
-                  Утасны дугаар
-                </TableCell>
-                <TableCell>
-                  Бүртгүүлсэн огноо
-                </TableCell>
+                <TableCell>Овог</TableCell>
+                <TableCell>Нэр</TableCell>
+                <TableCell>Цахим шуудан</TableCell>
+                <TableCell>Утасны дугаар</TableCell>
+                <TableCell>Төлөв</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {customers?.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -114,36 +148,23 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                   <TableCell>
                     <Box
                       sx={{
-                        alignItems: 'center',
-                        display: 'flex'
+                        alignItems: "center",
+                        display: "flex",
                       }}
                     >
-                      <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
+                      <Typography color="textPrimary" variant="body1">
+                        {customer.lastname || "No value"}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    <Typography color="textPrimary" variant="body1">
+                      {customer.firstname || "No value"}
+                    </Typography>
                   </TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
-                  </TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{customer.phone || "No value"}</TableCell>
+                  <TableCell>{customer.active ? "active" : "disabled"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -152,17 +173,17 @@ export const CustomerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={totalElements}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPage={ROWS_PER_PAGE}
+        rowsPerPageOptions={[ROWS_PER_PAGE]}
       />
     </Card>
   );
 };
 
 CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  customers: PropTypes.array.isRequired,
 };
