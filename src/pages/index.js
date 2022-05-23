@@ -4,90 +4,87 @@ import { Typography, Container, Grid, Box, Pagination } from "@mui/material";
 import Navbar from "../components/main/navbar";
 import { PostCard } from "../components/post/post-card";
 import MainSearchBar from "../components/main/main-search-bar";
-import { products } from "../__mocks__/products";
 
 import MainFeaturedPost from "../components/main/MainFeaturedPost";
 import FeaturedPost from "../components/main/FeaturedPost";
-import axios from "axios";
-// const PAGE_SIZE = 21
-
-const mainFeaturedPost = {
-  title: "Title of a longer featured blog post",
-  description:
-    "Multiple lines of text that form the lede, informing new readers quickly and efficiently about what's most interesting in this post's contents.",
-  image: "https://source.unsplash.com/random",
-  imageText: "main image description",
-  linkText: "Бүртгүүлэх",
-};
-
-const featuredPosts = [
-  {
-    title: "Featured post",
-    date: "Nov 12",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    image: "https://source.unsplash.com/random",
-    imageLabel: "Image Text",
-  },
-  {
-    title: "Post title",
-    date: "Nov 11",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    image: "https://source.unsplash.com/random",
-    imageLabel: "Image Text",
-  },
-];
+const PAGE_SIZE = 6;
 
 export async function getServerSideProps() {
   // Fetch data from external API
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ZmQ1N2I0Zi1lYTE0LTQ1MWQtOGFmZC02OGI2YWNkNzhhYzAiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY1Mjc5NDU3NSwiZXhwIjoxNjU0MjY1ODA0fQ.EKulCJVV07-fBDg0GJ9cQBs3uAvi0ian2S9rrL52uFc";
-
-  console.log(token);
-  const apiURL = `http://localhost:8081/api/posts?maxArea=100&maxPrice=10000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=20`;
+  const apiURL = `http://localhost:8081/api/posts?maxArea=&maxPrice=&minArea=&minPrice=&page=0&searchPattern=%20&size=${PAGE_SIZE}`;
   const res = await fetch(apiURL, {
     method: "GET",
     headers: {
       "Content-type": "application/json",
-      Authorization: `Bearer ${token}`, // notice the Bearer before your token
     },
   });
   const data = await res.json();
-  console.log(data);
 
   // Pass data to the page via props
   return { props: { data } };
 }
 
 const Landing = ({ data }) => {
-  console.log(data);
-  const [pageCount, setPageCount] = useState(3);
-  const [posts, setPosts] = useState(products);
-  const [temp, setTemp] = useState([]);
-  const [postsCount, setPostsCount] = useState(32);
+  const [pageCount, setPageCount] = useState(data.totalPages);
+  const [postsCount, setPostsCount] = useState(data.totalElements);
+  const [posts, setPosts] = useState(data.content);
+  const [featuredPosts, setFeaturedPosts] = useState(data.content.slice(0, 6));
+
   const handleChangePage = (event, value) => {
-    console.log(value);
-    const nextPagePosts = posts;
-    setPosts(nextPagePosts.reverse());
+    const params = {
+      page: value - 1,
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      searchPattern: "",
+      size: PAGE_SIZE,
+    };
+
+    getPosts(params);
   };
 
   const handleSearch = (area, price, location, searchValue) => {
-    console.log(area, price, location, searchValue);
+    const params = {
+      maxArea: area[1],
+      minArea: area[0],
+      maxPrice: price[1] * 1000000,
+      minPrice: price[0],
+      page: 0,
+      searchPattern: "",
+      size: PAGE_SIZE,
+    };
+
+    getPosts(params);
   };
 
-  useEffect(() => {
-    // fetch data form backend
-    // const apiEndPoint =
-    //   "/api/posts?maxArea=100&maxPrice=10000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=20";
-    // const getPosts = async () => {
-    //   const { data: res } = await axios.get(apiEndPoint);
-    //   setTemp(res);
-    //   console.log(res);
-    // };
-    // getPosts();
-    // console.log(temp);
-  }, [posts]);
+  const getPosts = (params) => {
+    console.log(params);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify(params);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    fetch("/api/posts/get", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const { posts } = data;
+        setPosts(posts.content);
+        setPageCount(posts.totalPages);
+        setPostsCount(posts.totalElements);
+        setFeaturedPosts(data.content.slice(0, 6));
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {}, [posts]);
   return (
     <>
       <Head>
@@ -105,26 +102,12 @@ const Landing = ({ data }) => {
           </Typography>
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={4}>
-              {posts.map((post) => (
-                <Grid item key={post.id} xs={12} md={6}>
+              {posts?.map((post) => (
+                <Grid item key={`posts-${post.id}`} xs={12} md={6}>
                   <PostCard post={post} />
                 </Grid>
               ))}
             </Grid>
-            {/* <Grid container spacing={4}>
-                <Grid item xs={12} md={6}>
-                  <Grid container spacing={6}>
-                    {posts.map((post) => (
-                      <Grid item key={post.id} xs={12} md={6}>
-                        <PostCard post={post} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  Feature
-                </Grid>
-              </Grid> */}
           </Box>
           <Box
             sx={{
@@ -140,7 +123,7 @@ const Landing = ({ data }) => {
               onChange={handleChangePage}
             />
           </Box>
-          <MainFeaturedPost post={posts[1]} />
+          {posts.length > 0 && <MainFeaturedPost post={posts[0]} />}
           <Typography
             component="h2"
             variant="h5"
@@ -152,20 +135,10 @@ const Landing = ({ data }) => {
             Сүүлд нэмэгдсэн
           </Typography>
           <Grid container spacing={4}>
-            {featuredPosts.map((post) => (
-              <FeaturedPost key={post.title} post={post} />
+            {featuredPosts?.map((post) => (
+              <FeaturedPost key={`featured-${post.id}`} post={post} />
             ))}
           </Grid>
-          <Typography
-            component="h2"
-            variant="h5"
-            color="inherit"
-            align="center"
-            noWrap
-            sx={{ my: 5 }}
-          >
-            Манай үйлчилгээ
-          </Typography>
         </main>
       </Container>
     </>

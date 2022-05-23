@@ -19,12 +19,12 @@ function MainFeaturedPost(props) {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundImage: `url(${post.media})`,
+        backgroundImage: `url(${post.postImages[0].image})`,
       }}
     >
       <NextLink href={`/posts/${post.id}`} passHref>
         <a style={{ textDecoration: "none", color: "white" }}>
-          {<img style={{ display: "none" }} src={post.media} alt={post.title} />}
+          {<img style={{ display: "none" }} src={post.postImages[0].image} alt={post.title} />}
           <Box
             sx={{
               position: "absolute",
@@ -62,7 +62,6 @@ function MainFeaturedPost(props) {
 MainFeaturedPost.propTypes = {
   post: PropTypes.shape({
     description: PropTypes.string.isRequired,
-    media: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
   }).isRequired,
 };

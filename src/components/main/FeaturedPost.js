@@ -19,7 +19,7 @@ function FeaturedPost(props) {
               {post.title}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary">
-              {post.date}
+              {post.createdAt}
             </Typography>
             <Typography variant="subtitle1" paragraph>
               {post.description}
@@ -42,12 +42,12 @@ function FeaturedPost(props) {
 
 FeaturedPost.propTypes = {
   post: PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    imageLabel: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
+    createdAt: PropTypes.string,
+    description: PropTypes.string,
+    image: PropTypes.string,
+    imageLabel: PropTypes.string,
+    title: PropTypes.string,
+  }),
 };
 
 export default FeaturedPost;

@@ -11,38 +11,62 @@ import {
   DialogContent,
   Button,
   TextField,
+  Card,
+  SvgIcon,
+  CardContent,
+  InputAdornment,
 } from "@mui/material";
-import { products } from "../__mocks__/products";
+// import { products } from "../__mocks__/products";
 import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { ProductCard } from "../components/product/product-card";
 import { DashboardLayout } from "../components/dashboard-layout";
+import { Search as SearchIcon } from "../icons/search";
 
 const PAGE_SIZE = 6;
 
-const Products = () => {
-  const [pageCount, setPageCount] = useState(3);
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const apiURL = `http://localhost:8081/api/posts?maxArea=&maxPrice=&minArea=&minPrice=&page=0&searchPattern=%20&size=${PAGE_SIZE}`;
+  const res = await fetch(apiURL, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  const data = await res.json();
+  console.log(data);
+
+  // Pass data to the page via props
+  return { props: { data } };
+}
+const Products = ({ data }) => {
+  const [pageCount, setPageCount] = useState(data.totalPages);
+  const [postsCount, setPostsCount] = useState(data.totalElements);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [post, setPost] = useState({});
+  const [products, setProducts] = useState(data.content);
   const [message, setMessage] = useState("");
+  const [searchPattern, setSearchPattern] = useState("");
 
   // getters
-  const getPosts = () => {
-    const token = localStorage.getItem("accesToken");
+  const getPosts = (params) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const setterData = {};
-
-    const raw = JSON.stringify(setterData);
+    const raw = JSON.stringify(params);
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
     };
     fetch("/api/posts/get", requestOptions)
-      .then((response) => {
-        console.log(response.status);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const { posts } = data;
+        setProducts(posts.content);
+        setPageCount(posts.totalPages);
+        setPostsCount(posts.totalElements);
       })
       .catch((error) => console.log("error", error));
   };
@@ -51,6 +75,21 @@ const Products = () => {
   const handleClose = () => {
     setIsCreateOpen(false);
   };
+
+  const handleSearch = () => {
+    const params = {
+      searchPattern,
+      page: 0,
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      size: PAGE_SIZE,
+    };
+
+    getPosts(params);
+  };
+
   const handleCreate = () => {
     const token = localStorage.getItem("accessToken");
     const myHeaders = new Headers();
@@ -131,6 +170,36 @@ const Products = () => {
       >
         <Container maxWidth={false}>
           <ProductListToolbar handleOpen={() => setIsCreateOpen(true)} />
+          <Box>
+            <Box sx={{ mt: 3 }}>
+              <Card>
+                <CardContent sx={{ display: "flex" }}>
+                  <Box sx={{ maxWidth: 500 }}>
+                    <TextField
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SvgIcon fontSize="small" color="action">
+                              <SearchIcon />
+                            </SvgIcon>
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder="Зар хайх"
+                      variant="outlined"
+                      value={searchPattern}
+                      onChange={(event) => setSearchPattern(event.target.value)}
+                    />
+                  </Box>
+
+                  <Button sx={{ ml: 3 }} variant="contained">
+                    Хайх
+                  </Button>
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>
               {products.map((product) => (

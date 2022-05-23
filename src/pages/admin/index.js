@@ -5,61 +5,97 @@ import { LatestListings } from "../../components/admin/latest-listings";
 import { LatestProducts } from "../../components/admin/latest-products";
 import { TotalCustomers } from "../../components/admin/total-customers";
 import { AdminLayout } from "../../components/admin-layout";
+import { useEffect, useState } from "react";
 
+const PAGE_SIZE = 6;
 
 export async function getServerSideProps() {
   // Fetch data from external API
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ZmQ1N2I0Zi1lYTE0LTQ1MWQtOGFmZC02OGI2YWNkNzhhYzAiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY1Mjc5NDU3NSwiZXhwIjoxNjU0MjY1ODA0fQ.EKulCJVV07-fBDg0GJ9cQBs3uAvi0ian2S9rrL52uFc";
-
-  console.log(token);
-  const apiURL = `http://localhost:8081/api/posts?maxArea=100&maxPrice=10000000&minArea=0&minPrice=0&page=0&searchPattern=%20&size=20`;
+  const apiURL = `http://localhost:8081/api/posts?maxArea=&maxPrice=&minArea=&minPrice=&page=0&searchPattern=%20&size=${PAGE_SIZE}`;
   const res = await fetch(apiURL, {
     method: "GET",
     headers: {
       "Content-type": "application/json",
-      Authorization: `Bearer ${token}`, // notice the Bearer before your token
     },
   });
-  const data = await res.json();
-  console.log(data);
+  const posts = await res.json();
 
   // Pass data to the page via props
-  return { props: { data } };
+  return { props: { posts } };
 }
 
-const Dashboard = ({data}) => (
-  <>
-    <Head>
-      <title>Админ самбар</title>
-    </Head>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8,
-      }}
-    >
-      <Container maxWidth={false}>
-        <Grid container spacing={3}>
-          <Grid item lg={6} sm={6} xl={6} xs={12}>
-            <TotalProducts />
-          </Grid>
-          <Grid item xl={6} lg={6} sm={6} xs={12}>
-            <TotalCustomers />
-          </Grid>
+const Dashboard = ({ posts }) => {
+  const [totalElements, setTotalElements] = useState(0);
+  const [customers, setCustomers] = useState([]);
 
-          <Grid item lg={4} md={6} xl={3} xs={12}>
-            <LatestProducts sx={{ height: "100%" }} />
+  const getCustomers = () => {
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const setterData = {
+      page: 0,
+      searchValue: "",
+      size: PAGE_SIZE,
+    };
+    const raw = JSON.stringify(setterData);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
+
+    // console.log(post);
+    fetch("/api/customers/get", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        const { users } = data;
+        setTotalElements(users.totalElements);
+        setCustomers(users.content);
+        console.log(users);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    getCustomers();
+  }, []);
+
+  return (
+    <>
+      <Head>
+        <title>Админ самбар</title>
+      </Head>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8,
+        }}
+      >
+        <Container maxWidth={false}>
+          <Grid container spacing={3}>
+            <Grid item lg={6} sm={6} xl={6} xs={12}>
+              <TotalProducts totalElements={posts.totalElements} />
+            </Grid>
+            <Grid item xl={6} lg={6} sm={6} xs={12}>
+              <TotalCustomers totalElements={totalElements} />
+            </Grid>
+
+            <Grid item lg={4} md={6} xl={3} xs={12}>
+              <LatestProducts posts={posts.content} sx={{ height: "100%" }} />
+            </Grid>
+            <Grid item lg={8} md={12} xl={9} xs={12}>
+              <LatestListings customers={customers} />
+            </Grid>
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
-            <LatestListings />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
-  </>
-);
+        </Container>
+      </Box>
+    </>
+  );
+};
 
 Dashboard.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
 

@@ -88,7 +88,7 @@ const listings = [
   },
 ];
 
-export const LatestListings = (props) => (
+export const LatestListings = ({ props, customers }) => (
   <Card {...props}>
     <CardHeader title="Сүүлд бүртгүүлсэн хэрэглэгчид" />
     <PerfectScrollbar>
@@ -96,32 +96,30 @@ export const LatestListings = (props) => (
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Овог</TableCell>
               <TableCell>Нэр</TableCell>
-              <TableCell>Цахим шуудан</TableCell>
               <TableCell sortDirection="desc">
                 <Tooltip enterDelay={300} title="Sort">
                   <TableSortLabel active direction="desc">
-                    Хаяг
+                    Цахим шуудан
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
               <TableCell>Утасны дугаар</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {listings.map((listing) => (
-              <TableRow hover key={listing.id}>
-                <TableCell>{listing.name}</TableCell>
-                <TableCell>{listing.email}</TableCell>
-                <TableCell>
-                  {`${listing.address.city}`}
-                </TableCell>
-                <TableCell>
-                  {listing.phone}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          {customers && (
+            <TableBody>
+              {customers.map((listing) => (
+                <TableRow hover key={listing.id}>
+                  <TableCell>{listing.lastname || "No value"}</TableCell>
+                  <TableCell>{listing.firstname || "No value"}</TableCell>
+                  <TableCell>{listing.email || "No value"}</TableCell>
+                  <TableCell>{listing.phone || "No value"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </Box>
     </PerfectScrollbar>
@@ -137,7 +135,7 @@ export const LatestListings = (props) => (
         endIcon={<ArrowRightIcon fontSize="small" />}
         size="small"
         variant="text"
-        href="/products"
+        href="/customers"
       >
         Бүгдийг харах
       </Button>

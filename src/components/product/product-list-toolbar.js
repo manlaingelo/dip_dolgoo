@@ -12,47 +12,27 @@ import { Download as DownloadIcon } from "../../icons/download";
 import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
 
-export const ProductListToolbar = (props) => (
-  <Box {...props}>
-    <Box
-      sx={{
-        alignItems: "center",
-        display: "flex",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        m: -1,
-      }}
-    >
-      <Typography sx={{ m: 1 }} variant="h4">
-        Зарууд
-      </Typography>
-      <Box sx={{ m: 1 }}>
-        <Button color="primary" variant="contained" onClick={props.handleOpen}>
-          Зар нэмэх
-        </Button>
+export const ProductListToolbar = (props) => {
+  return (
+    <Box {...props}>
+      <Box
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          m: -1,
+        }}
+      >
+        <Typography sx={{ m: 1 }} variant="h4">
+          Зарууд
+        </Typography>
+        <Box sx={{ m: 1 }}>
+          <Button color="primary" variant="contained" onClick={props.handleOpen}>
+            Зар нэмэх
+          </Button>
+        </Box>
       </Box>
     </Box>
-    <Box sx={{ mt: 3 }}>
-      <Card>
-        <CardContent>
-          <Box sx={{ maxWidth: 500 }}>
-            <TextField
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
-                      <SearchIcon />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Зар хайх"
-              variant="outlined"
-            />
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
-  </Box>
-);
+  );
+};

@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import {
   AppBar,
@@ -22,8 +23,13 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 }));
 
 export const DashboardNavbar = (props) => {
+  const router = useRouter();
   const { onSidebarOpen, ...other } = props;
 
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    router.push("/");
+  };
   return (
     <>
       <DashboardNavbarRoot
@@ -79,9 +85,11 @@ export const DashboardNavbar = (props) => {
             <UserCircleIcon fontSize="small" />
           </Avatar>
           <Tooltip title="Logout">
-            <IconButton sx={{ ml: 1 }}>
+            <IconButton onClick={logout} sx={{ ml: 1 }}>
               <UsersIcon fontSize="small" />
-              <Typography m={1} fontSize="small">Гарах</Typography>
+              <Typography m={1} fontSize="small">
+                Гарах
+              </Typography>
             </IconButton>
           </Tooltip>
         </Toolbar>

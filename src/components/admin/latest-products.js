@@ -47,31 +47,30 @@ const products = [
   },
 ];
 
-export const LatestProducts = (props) => (
+export const LatestProducts = ({ props, posts }) => (
   <Card {...props}>
-    <CardHeader subtitle={`${products.length} in total`} title="Сүүлийн зарууд" />
+    <CardHeader subtitle={`${posts.length} in total`} title="Сүүлийн зарууд" />
     <Divider />
-    <List>
-      {products.map((product, i) => (
-        <ListItem divider={i < products.length - 1} key={product.id}>
-          <ListItemAvatar>
-            <img
-              alt={product.title}
-              src={product.imageUrl}
-              style={{
-                height: 48,
-                width: 48,
-              }}
-            />
-          </ListItemAvatar>
-          <ListItemText
-            primary={product.title}
-            secondary={`Шинэчилсэн: ${formatDistanceToNow(product.updatedAt)}`}
-          />
-          <IconButton edge="end" size="small"></IconButton>
-        </ListItem>
-      ))}
-    </List>
+    {posts && (
+      <List>
+        {posts.map((product, i) => (
+          <ListItem divider={i < posts.length - 1} key={product.id}>
+            <ListItemAvatar>
+              <img
+                alt={product.title}
+                src={product.imageUrl}
+                style={{
+                  height: 48,
+                  width: 48,
+                }}
+              />
+            </ListItemAvatar>
+            <ListItemText primary={product.title} secondary={`Үнэ: ${product.price}`} />
+            <IconButton edge="end" size="small"></IconButton>
+          </ListItem>
+        ))}
+      </List>
+    )}
     <Divider />
     <Box
       sx={{
