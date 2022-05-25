@@ -1,5 +1,8 @@
+/* eslint-disable */
+import React, { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -15,12 +18,15 @@ import {
   SvgIcon,
   CardContent,
   InputAdornment,
+  Stack,
+  Typography,
 } from "@mui/material";
 // import { products } from "../__mocks__/products";
 import { ProductListToolbar } from "../components/product/product-list-toolbar";
 import { ProductCard } from "../components/product/product-card";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { Search as SearchIcon } from "../icons/search";
+import { Upload as UploadIcon } from "../icons/upload";
 
 const PAGE_SIZE = 6;
 
@@ -40,6 +46,8 @@ export async function getServerSideProps() {
   return { props: { data } };
 }
 const Products = ({ data }) => {
+  const [files, setFiles] = useState([]);
+  const [base64Files, setBase64Files] = useState([]);
   const [pageCount, setPageCount] = useState(data.totalPages);
   const [postsCount, setPostsCount] = useState(data.totalElements);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -95,33 +103,24 @@ const Products = ({ data }) => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
+    const postImages = base64Files.map((file, index) => {
+      console.log(post)
+      return {
+        ...post,
+        image: file,
+        poster: index === 0 ? true : false,
+      };
+    });
+    console.log("post iamges::::::", postImages);
+
     const setterData = {
       ...post,
-      postImages: [
-        {
-          id: 0,
-          image: `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>`,
-          post: {
-            address: post.address,
-            area: post.area,
-            createdDate: "2022-05-17T15:56:55.260Z",
-            description: post.description,
-            id: "string",
-            modifiedDate: "2022-05-17T15:56:55.260Z",
-            postImages: [null],
-            postTypes: ["POST_PLACE"],
-            price: post.price,
-            rooms: post.price,
-            title: post.title,
-          },
-          poster: true,
-        },
-      ],
-      postType: 1,
+      postImages,
+      postType: 0,
     };
     const raw = JSON.stringify(setterData);
 
-    console.log("creating", raw, post);
+    console.log("creating", raw);
 
     const requestOptions = {
       method: "POST",
@@ -141,6 +140,16 @@ const Products = ({ data }) => {
       })
       .catch((error) => console.log("error", error));
   };
+  function getBase64(file, cb) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      cb(reader.result);
+    };
+    reader.onerror = function (error) {
+      console.log("Error: ", error);
+    };
+  }
 
   const handlePostChange = (e) => {
     let formData = post;
@@ -164,7 +173,7 @@ const Products = ({ data }) => {
   };
 
   const refreshPosts = () => {
-    console.log('refreshing')
+    console.log("refreshing");
     const params = {
       searchPattern: "",
       page: 0,
@@ -189,6 +198,14 @@ const Products = ({ data }) => {
     };
     getPosts(params);
   }, []);
+
+  useEffect(() => {
+    files.forEach((file) => {
+      getBase64(file, (result) => {
+        setBase64Files([...base64Files, result]);
+      });
+    });
+  }, [files]);
 
   return (
     <>
@@ -266,6 +283,9 @@ const Products = ({ data }) => {
         <DialogContent>
           <Grid sx={{ py: 3 }} spacing={2} container>
             <Grid xs={12} item>
+              <Dropzone files={files} setFiles={(files) => setFiles(files)} />
+            </Grid>
+            <Grid xs={12} item>
               <TextField
                 onChange={handlePostChange}
                 name="title"
@@ -313,3 +333,102 @@ const Products = ({ data }) => {
 Products.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Products;
+
+const thumbsContainer = {
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  marginTop: 16,
+};
+
+const thumb = {
+  display: "inline-flex",
+  border: "1px solid #eaeaea",
+  borderRadius: "1rem",
+  marginBottom: 8,
+  marginRight: 8,
+  width: 100,
+  height: 100,
+  padding: 4,
+  boxSizing: "border-box",
+};
+
+const thumbInner = {
+  display: "flex",
+  minWidth: 0,
+  overflow: "hidden",
+};
+
+const img = {
+  display: "block",
+  width: "auto",
+  height: "100%",
+  borderRadius: "0.75rem",
+};
+
+function Dropzone(props) {
+  const { files, setFiles } = props;
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "image/*": [],
+    },
+    onDrop: (acceptedFiles) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      );
+    },
+  });
+
+  const thumbs = files.map((file) => (
+    <div style={thumb} key={file.name}>
+      <div style={thumbInner}>
+        <img
+          src={file.preview}
+          style={img}
+          // Revoke data uri after image is loaded
+          alt={file.name}
+          onLoad={() => {
+            URL.revokeObjectURL(file.preview);
+          }}
+        />
+      </div>
+    </div>
+  ));
+
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
+  }, [files]);
+
+  return (
+    <section className="container">
+      <Card
+        sx={{
+          p: 2,
+          "&:hover": {
+            cursor: "pointer",
+          },
+          border: "2px dashed #94a3b8",
+        }}
+      >
+        <div {...getRootProps({ className: "dropzone" })}>
+          <input {...getInputProps()} />
+          <Typography variant="body2" textAlign="center" sx={{ color: "#9ca3af" }}>
+            Зургаа зөөж оруулах эсвэл энд товчсноор нэмэх боломжтой
+          </Typography>
+          <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
+            <SvgIcon fontSize="small" color="action">
+              <UploadIcon />
+            </SvgIcon>
+          </Stack>
+        </div>
+      </Card>
+
+      <aside style={thumbsContainer}>{thumbs}</aside>
+    </section>
+  );
+}
