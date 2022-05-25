@@ -25,35 +25,11 @@ export const CustomerListToolbar = (props) => (
         Хэрэглэгчид
       </Typography>
       <Box sx={{ m: 1 }}>
-        <Button color="error" variant="contained">
+        <Button onClick={props.handleDelete} color="error" variant="contained">
           Хэрэглэгч устгах
         </Button>
       </Box>
     </Box>
-    <Box sx={{ mt: 3 }}>
-      <Card>
-        <CardContent sx={{ display: "flex" }}>
-          <Box sx={{ maxWidth: 500 }}>
-            <TextField
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon color="action" fontSize="small">
-                      <SearchIcon />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Хайх"
-              variant="outlined"
-            />
-          </Box>
-          <Button sx={{ ml: 3 }} variant="contained">
-            Search
-          </Button>
-        </CardContent>
-      </Card>
-    </Box>
+    
   </Box>
 );

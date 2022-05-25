@@ -58,7 +58,7 @@ export const LatestProducts = ({ props, posts }) => (
             <ListItemAvatar>
               <img
                 alt={product.title}
-                src={product.imageUrl}
+                src={product.postImages[0].image}
                 style={{
                   height: 48,
                   width: 48,

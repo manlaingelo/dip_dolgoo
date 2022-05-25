@@ -14,12 +14,18 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  SvgIcon,
+  CardContent,
+  TextField,
+  Button,
+  InputAdornment,
 } from "@mui/material";
 import { getInitials } from "../../utils/get-initials";
+import { Search as SearchIcon } from "../../icons/search";
 
 const ROWS_PER_PAGE = 5;
 
-export const CustomerListResults = ({ ...rest }) => {
+export const CustomerListResults = ({ setSelectedCustomerId, refresh, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [limit, setLimit] = useState(ROWS_PER_PAGE);
@@ -34,7 +40,7 @@ export const CustomerListResults = ({ ...rest }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
-
+    console.log(page, searchValue);
     const setterData = {
       page,
       searchValue,
@@ -54,7 +60,7 @@ export const CustomerListResults = ({ ...rest }) => {
       .then((data) => {
         const { users } = data;
         setCustomers(users.content);
-        setTotalElements(users.totalElements)
+        setTotalElements(users.totalElements);
         console.log(users);
       })
       .catch((error) => console.log("error", error));
@@ -62,7 +68,7 @@ export const CustomerListResults = ({ ...rest }) => {
 
   useEffect(() => {
     getCustomers();
-  }, [page]);
+  }, [page, refresh]);
 
   // handlers
 
@@ -95,7 +101,10 @@ export const CustomerListResults = ({ ...rest }) => {
       );
     }
 
+    console.log(newSelectedCustomerIds);
+
     setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedCustomerId(newSelectedCustomerIds[0]);
   };
 
   const handleLimitChange = (event) => {
@@ -106,81 +115,116 @@ export const CustomerListResults = ({ ...rest }) => {
     setPage(newPage);
   };
 
+  const handleSearch = () => {
+    getCustomers();
+  };
+
   return (
-    <Card {...rest}>
-      <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers?.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < customers?.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>Овог</TableCell>
-                <TableCell>Нэр</TableCell>
-                <TableCell>Цахим шуудан</TableCell>
-                <TableCell>Утасны дугаар</TableCell>
-                <TableCell>Төлөв</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {customers?.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
+    <>
+      <Box sx={{ mt: 3 }}>
+        <Card>
+          <CardContent sx={{ display: "flex" }}>
+            <Box sx={{ maxWidth: 500 }}>
+              <TextField
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon color="action" fontSize="small">
+                        <SearchIcon />
+                      </SvgIcon>
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder="Хайх"
+                variant="outlined"
+                value={searchValue}
+                onChange={(event) => {
+                  setSearchValue(event.target.value), console.log(event.target.value);
+                }}
+              />
+            </Box>
+            <Button onClick={handleSearch} sx={{ ml: 3 }} variant="contained">
+              Search
+            </Button>
+          </CardContent>
+        </Card>
+      </Box>
+      <Card {...rest}>
+        <PerfectScrollbar>
+          <Box sx={{ minWidth: 1050 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
+                      checked={selectedCustomerIds.length === customers?.length}
+                      color="primary"
+                      indeterminate={
+                        selectedCustomerIds.length > 0 &&
+                        selectedCustomerIds.length < customers?.length
+                      }
+                      onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: "center",
-                        display: "flex",
-                      }}
-                    >
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.lastname || "No value"}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography color="textPrimary" variant="body1">
-                      {customer.firstname || "No value"}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{customer.phone || "No value"}</TableCell>
-                  <TableCell>{customer.active ? "active" : "disabled"}</TableCell>
+                  <TableCell>Овог</TableCell>
+                  <TableCell>Нэр</TableCell>
+                  <TableCell>Цахим шуудан</TableCell>
+                  <TableCell>Утасны дугаар</TableCell>
+                  <TableCell>Төлөв</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={totalElements}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={ROWS_PER_PAGE}
-        rowsPerPageOptions={[ROWS_PER_PAGE]}
-      />
-    </Card>
+              </TableHead>
+              <TableBody>
+                {customers?.slice(0, limit).map((customer) => (
+                  <TableRow
+                    hover
+                    key={customer.id}
+                    selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedCustomerIds.indexOf(customer.id) !== -1}
+                        onChange={(event) => handleSelectOne(event, customer.id)}
+                        value="true"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <Typography color="textPrimary" variant="body1">
+                          {customer.lastname || "No value"}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography color="textPrimary" variant="body1">
+                        {customer.firstname || "No value"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.phone || "No value"}</TableCell>
+                    <TableCell>{customer.active ? "active" : "disabled"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </PerfectScrollbar>
+        <TablePagination
+          component="div"
+          count={totalElements}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={page}
+          rowsPerPage={ROWS_PER_PAGE}
+          rowsPerPageOptions={[ROWS_PER_PAGE]}
+        />
+      </Card>
+    </>
   );
 };
 

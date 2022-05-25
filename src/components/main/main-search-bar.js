@@ -124,7 +124,7 @@ const MainSearchBar = (props) => {
           />
         </Grid>
         <Grid item xs={6} md={3}>
-          <ButtonGroup
+          {/* <ButtonGroup
             variant="contained"
             ref={anchorRef}
             aria-label="split button"
@@ -143,7 +143,7 @@ const MainSearchBar = (props) => {
             >
               <ArrowDropDownIcon />
             </Button>
-          </ButtonGroup>
+          </ButtonGroup> */}
           <Popper
             open={open}
             anchorEl={anchorRef.current}

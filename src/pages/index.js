@@ -45,13 +45,22 @@ const Landing = ({ data }) => {
   };
 
   const handleSearch = (area, price, location, searchValue) => {
+    // const params = {
+    //   maxArea: area[1],
+    //   minArea: area[0],
+    //   maxPrice: price[1] * 1000000,
+    //   minPrice: price[0],
+    //   page: 0,
+    //   searchPattern: "",
+    //   size: PAGE_SIZE,
+    // };
     const params = {
-      maxArea: area[1],
-      minArea: area[0],
-      maxPrice: price[1] * 1000000,
-      minPrice: price[0],
       page: 0,
-      searchPattern: "",
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      searchPattern: searchValue,
       size: PAGE_SIZE,
     };
 

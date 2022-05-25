@@ -32,7 +32,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 // ----------------------------------------------------------------------
 
 const MoreMenu = (props) => {
-  // const { product } = props;
+  const { refreshPosts } = props;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [product, setProduct] = useState(props.product);
@@ -61,6 +61,11 @@ const MoreMenu = (props) => {
     fetch("/api/posts/delete", requestOptions)
       .then((response) => {
         console.log(response);
+        if (response.status === 204) {
+          console.log("DELETED!!!");
+          setIsOpenDelete(false);
+          refreshPosts();
+        }
       })
       .catch((error) => console.log("error", error));
   };
@@ -87,6 +92,11 @@ const MoreMenu = (props) => {
     fetch("/api/posts/update", requestOptions)
       .then((response) => {
         console.log(response);
+        if (response.status === 200) {
+          console.log("UPDATED");
+          setIsOpenUpdate(false);
+          refreshPosts();
+        }
       })
       .catch((error) => console.log("error", error));
   };
@@ -245,7 +255,9 @@ const MoreMenu = (props) => {
   );
 };
 
-export const ProductCard = ({ product, ...rest }) => (
+
+
+export const ProductCard = ({ product, refreshPosts, ...rest }) => (
   <Card
     sx={{
       display: "flex",
@@ -257,7 +269,7 @@ export const ProductCard = ({ product, ...rest }) => (
     <CardMedia
       component="img"
       height="140"
-      image={product.media}
+      image={product.postImages[0].image}
       alt={`listing ${product.title}`}
     />
     <CardContent>
@@ -300,7 +312,7 @@ export const ProductCard = ({ product, ...rest }) => (
 
     <CardActions>
       <IconButton aria-label="actions" sx={{ marginLeft: "auto" }}>
-        <MoreMenu product={product} />
+        <MoreMenu product={product} refreshPosts={refreshPosts} />
       </IconButton>
     </CardActions>
   </Card>

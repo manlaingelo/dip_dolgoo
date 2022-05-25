@@ -1,15 +1,46 @@
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import { CustomerListResults } from "../../components/customer/customer-list-results";
 import { CustomerListToolbar } from "../../components/customer/customer-list-toolbar";
 import { AdminLayout } from "../../components/admin-layout";
-import { customers } from "../../__mocks__/customers";
-import { useEffect } from "react";
 
 const Customers = () => {
   // const getCustomer = () => {};
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const handleDelete = () => {
+    console.log("triggered", selectedCustomerId);
+    setRefresh(true);
+    deleteCustomer(selectedCustomerId);
+  };
+  const deleteCustomer = (id) => {
+    const token = localStorage.getItem("accessToken");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    const setterData = {
+      id,
+    };
+    const raw = JSON.stringify(setterData);
 
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+    };
 
+    // console.log(post);
+    fetch("/api/customers/delete", requestOptions)
+      .then((response) => {
+        console.log(response)
+        response.json()
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log("error", error));
+  };
   return (
     <>
       <Head>
@@ -23,9 +54,13 @@ const Customers = () => {
         }}
       >
         <Container maxWidth={false}>
-          <CustomerListToolbar />
+          <CustomerListToolbar handleDelete={handleDelete} />
+
           <Box sx={{ mt: 3 }}>
-            <CustomerListResults customers={customers} />
+            <CustomerListResults
+              setSelectedCustomerId={(id) => setSelectedCustomerId(id)}
+              refresh={refresh}
+            />
           </Box>
         </Container>
       </Box>

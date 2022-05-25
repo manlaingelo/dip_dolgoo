@@ -86,7 +86,6 @@ const Products = ({ data }) => {
       minPrice: "",
       size: PAGE_SIZE,
     };
-
     getPosts(params);
   };
 
@@ -118,8 +117,11 @@ const Products = ({ data }) => {
           poster: true,
         },
       ],
+      postType: 1,
     };
     const raw = JSON.stringify(setterData);
+
+    console.log("creating", raw, post);
 
     const requestOptions = {
       method: "POST",
@@ -141,19 +143,51 @@ const Products = ({ data }) => {
   };
 
   const handlePostChange = (e) => {
-    console.log(e.target.value);
     let formData = post;
+    formData[e.target.name] = e.target.value;
     console.log(formData);
-    data[e.target.name] = e.target.value;
     setPost(formData);
   };
 
   const handleChangePage = (e, value) => {
     console.log(value);
+    const params = {
+      searchPattern: "",
+      page: value - 1,
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      size: PAGE_SIZE,
+    };
+    getPosts(params);
+  };
+
+  const refreshPosts = () => {
+    console.log('refreshing')
+    const params = {
+      searchPattern: "",
+      page: 0,
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      size: PAGE_SIZE,
+    };
+    getPosts(params);
   };
 
   useEffect(() => {
-    getPosts();
+    const params = {
+      searchPattern: "",
+      page: 0,
+      maxArea: "",
+      minArea: "",
+      maxPrice: "",
+      minPrice: "",
+      size: PAGE_SIZE,
+    };
+    getPosts(params);
   }, []);
 
   return (
@@ -189,11 +223,13 @@ const Products = ({ data }) => {
                       placeholder="Зар хайх"
                       variant="outlined"
                       value={searchPattern}
-                      onChange={(event) => setSearchPattern(event.target.value)}
+                      onChange={(event) => {
+                        setSearchPattern(event.target.value), console.log(event.target.value);
+                      }}
                     />
                   </Box>
 
-                  <Button sx={{ ml: 3 }} variant="contained">
+                  <Button onClick={handleSearch} sx={{ ml: 3 }} variant="contained">
                     Хайх
                   </Button>
                 </CardContent>
@@ -204,7 +240,7 @@ const Products = ({ data }) => {
             <Grid container spacing={3}>
               {products.map((product) => (
                 <Grid item key={product.id} lg={4} md={6} xs={12}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product} refreshPosts={refreshPosts} />
                 </Grid>
               ))}
             </Grid>
