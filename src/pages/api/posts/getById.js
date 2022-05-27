@@ -16,7 +16,6 @@ export default async function handler(req, res) {
   const body = req.body;
   if (body) {
     const result = await getPosts({ body, auth: req.headers.authorization });
-    console.log(result)
     const posts = result.data;
     res.status(result.status).json({ posts });
     return;

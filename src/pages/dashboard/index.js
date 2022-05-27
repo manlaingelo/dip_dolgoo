@@ -16,7 +16,6 @@ export async function getServerSideProps() {
     },
   });
   const data = await res.json();
-  console.log(data);
 
   // Pass data to the page via props
   return { props: { data } };

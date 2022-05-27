@@ -9,7 +9,6 @@ import Navbar from "../../components/main/navbar";
 const Posts = () => {
   const [posts, setPosts] = useState(products);
   const [postsCount, setPostsCount] = useState(32);
-  console.log(posts);
   return (
     <>
       <Head>
@@ -27,7 +26,10 @@ const Posts = () => {
           <PostListToolbar />
 
           <Typography gutterBottom variant="h5" component="div" mt={3}>
-            Олдсон зарууд <span style={{fontSize: "12px", color: "#65748b"}}>(хайлтад {postsCount} тохирсон)</span>
+            Олдсон зарууд{" "}
+            <span style={{ fontSize: "12px", color: "#65748b" }}>
+              (хайлтад {postsCount} тохирсон)
+            </span>
           </Typography>
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>

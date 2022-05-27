@@ -6,7 +6,6 @@ const getUsers = async (params) => {
     headers: { Authorization: auth },
   };
   const { page, searchValue, size } = body;
-  console.log(page, searchValue, size);
   return await axios.get(
     `http://localhost:8081/api/users?page=${page}&searchPattern=${searchValue}&size=${size}`,
     config
@@ -18,7 +17,6 @@ export default async function handler(req, res) {
   if (body) {
 
     const result = await getUsers({ body, auth: req.headers.authorization });
-    console.log(result);
     const users = result.data;
     res.status(result.status).json({ users });
     return;

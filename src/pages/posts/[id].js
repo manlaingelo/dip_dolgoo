@@ -19,9 +19,7 @@ const PostDetail = () => {
     //   todo: set true for fetch data
     setLoading(false);
 
-    console.log(products);
     const currentPost = products.filter((post) => post.id == id);
-    console.log(currentPost);
     setPostData(currentPost[0]);
     setTimeout(() => {
       setLoading(false);

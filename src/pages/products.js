@@ -85,27 +85,6 @@ const Products = ({ data }) => {
       .catch((error) => console.log("error", error));
   };
 
-  // const getPostsById = (params) => {
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
-
-  //   const raw = JSON.stringify(params);
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: raw,
-  //   };
-  //   fetch("/api/posts/get", requestOptions)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       const { posts } = data;
-  //       setProducts(posts.content);
-  //       setPageCount(posts.totalPages);
-  //       setPostsCount(posts.totalElements);
-  //     })
-  //     .catch((error) => console.log("error", error));
-  // };
-
   // handlers
   const handleClose = () => {
     setIsCreateOpen(false);
@@ -153,7 +132,6 @@ const Products = ({ data }) => {
 
     fetch("/api/posts/create", requestOptions)
       .then((response) => {
-        console.log(response.status, response);
         if (response.status === 201) {
           setMessage("Амжилттай.");
           setIsCreateOpen(false);
@@ -178,12 +156,10 @@ const Products = ({ data }) => {
   const handlePostChange = (e) => {
     let formData = post;
     formData[e.target.name] = e.target.value;
-    console.log(formData);
     setPost(formData);
   };
 
   const handleChangePage = (e, value) => {
-    console.log(value);
     const params = {
       searchPattern: "",
       page: value - 1,
@@ -197,7 +173,6 @@ const Products = ({ data }) => {
   };
 
   const refreshPosts = () => {
-    console.log("refreshing");
     const params = {
       searchPattern: "",
       page: 0,

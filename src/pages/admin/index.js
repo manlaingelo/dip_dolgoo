@@ -47,14 +47,12 @@ const Dashboard = ({ posts }) => {
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/customers/get", requestOptions)
       .then((response) => response.json())
       .then((data) => {
         const { users } = data;
         setTotalElements(users.totalElements);
         setCustomers(users.content);
-        console.log(users);
       })
       .catch((error) => console.log("error", error));
   };

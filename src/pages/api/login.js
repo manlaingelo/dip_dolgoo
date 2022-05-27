@@ -7,14 +7,12 @@ const loginUsers = async (params) => {
 export default async function handler(req, res) {
   const body = req.body;
   if (body) {
-    console.log(body);
 
     const result = await loginUsers(body);
     const user = {
       ...result.data.user,
       accessToken: result.data.accessToken,
     };
-    console.log(user);
     res.status(result.status).json({ user });
     return;
   }

@@ -87,7 +87,6 @@ const MoreMenu = (props) => {
     fetch("/api/posts/update", requestOptions)
       .then((response) => {
         if (response.status === 200) {
-          console.log("UPDATED");
           setIsOpenUpdate(false);
           refreshPosts();
         }

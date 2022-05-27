@@ -10,7 +10,6 @@ const Customers = () => {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [refresh, setRefresh] = useState(false);
   const handleDelete = () => {
-    console.log("triggered", selectedCustomerId);
     setRefresh(true);
     deleteCustomer(selectedCustomerId);
   };
@@ -31,18 +30,13 @@ const Customers = () => {
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/customers/delete", requestOptions)
       .then((response) => {
-        console.log(response);
         if (response.status === 204) {
-          console.log(response.status);
-    setRefresh(false);
+          setRefresh(false);
         }
       })
-      .then((data) => {
-        console.log(data);
-      })
+
       .catch((error) => console.log("error", error));
   };
   return (
