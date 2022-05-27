@@ -44,7 +44,7 @@ export const PostListToolbar = (props) => {
   };
 
   const handleSearch = () => {
-    console.log(area, price);
+    // console.log(area, price);
   };
 
   const handleClick = () => {

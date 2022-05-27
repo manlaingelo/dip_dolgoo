@@ -13,7 +13,6 @@ import {
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 export const LatestProducts = ({ props, products }) => {
-  console.log(products);
   return (
     <Card {...props}>
       <CardHeader subtitle={`${products.length} in total`} title="Сүүлийн зарууд" />

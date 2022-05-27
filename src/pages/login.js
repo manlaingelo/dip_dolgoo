@@ -27,10 +27,11 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         const { user } = data;
-        console.log(user);
         localStorage.setItem("accessToken", user.accessToken);
+        localStorage.setItem("userId", user.id);
         const userRole = user.roles[0];
         localStorage.setItem("roles", userRole);
+        localStorage.setItem("user", JSON.stringify(user))
 
         if (userRole === "ROLE_ADMIN") router.push("/admin");
         else router.push("/dashboard");

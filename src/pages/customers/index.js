@@ -14,6 +14,7 @@ const Customers = () => {
     setRefresh(true);
     deleteCustomer(selectedCustomerId);
   };
+
   const deleteCustomer = (id) => {
     const token = localStorage.getItem("accessToken");
     const myHeaders = new Headers();
@@ -33,8 +34,11 @@ const Customers = () => {
     // console.log(post);
     fetch("/api/customers/delete", requestOptions)
       .then((response) => {
-        console.log(response)
-        response.json()
+        console.log(response);
+        if (response.status === 204) {
+          console.log(response.status);
+    setRefresh(false);
+        }
       })
       .then((data) => {
         console.log(data);

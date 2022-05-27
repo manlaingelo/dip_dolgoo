@@ -40,7 +40,6 @@ export async function getServerSideProps() {
     },
   });
   const data = await res.json();
-  console.log(data);
 
   // Pass data to the page via props
   return { props: { data } };
@@ -58,19 +57,26 @@ const Products = ({ data }) => {
 
   // getters
   const getPosts = (params) => {
+    const id = localStorage.getItem("userId");
+    const token = localStorage.getItem("accessToken");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const raw = JSON.stringify(params);
+    const data = {
+      ...params,
+      id,
+    };
+
+    const raw = JSON.stringify(data);
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
     };
-    fetch("/api/posts/get", requestOptions)
+    fetch("/api/posts/getById", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const { posts } = data;
         setProducts(posts.content);
         setPageCount(posts.totalPages);
@@ -78,6 +84,27 @@ const Products = ({ data }) => {
       })
       .catch((error) => console.log("error", error));
   };
+
+  // const getPostsById = (params) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+
+  //   const raw = JSON.stringify(params);
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //   };
+  //   fetch("/api/posts/get", requestOptions)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const { posts } = data;
+  //       setProducts(posts.content);
+  //       setPageCount(posts.totalPages);
+  //       setPostsCount(posts.totalElements);
+  //     })
+  //     .catch((error) => console.log("error", error));
+  // };
 
   // handlers
   const handleClose = () => {
@@ -104,14 +131,12 @@ const Products = ({ data }) => {
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     const postImages = base64Files.map((file, index) => {
-      console.log(post)
       return {
         ...post,
         image: file,
         poster: index === 0 ? true : false,
       };
     });
-    console.log("post iamges::::::", postImages);
 
     const setterData = {
       ...post,
@@ -120,20 +145,19 @@ const Products = ({ data }) => {
     };
     const raw = JSON.stringify(setterData);
 
-    console.log("creating", raw);
-
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/posts/create", requestOptions)
       .then((response) => {
-        console.log(response.status);
+        console.log(response.status, response);
         if (response.status === 201) {
           setMessage("Амжилттай.");
+          setIsCreateOpen(false);
+          refreshPosts();
         } else {
           setMessage("Амжилтгүй, Ахин оролдоно уу.");
         }
@@ -316,6 +340,7 @@ const Products = ({ data }) => {
             </Grid>
             <Grid xs={12} item>
               <TextField onChange={handlePostChange} name="rooms" label="Өрөөний тоо" fullWidth />
+              <Typography align="right">{message}</Typography>
             </Grid>
           </Grid>
         </DialogContent>

@@ -19,12 +19,12 @@ function MainFeaturedPost(props) {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundImage: `url(${post.postImages[0].image})`,
+        backgroundImage: `url(${post.postImages[0]?.image})`,
       }}
     >
       <NextLink href={`/posts/${post.id}`} passHref>
         <a style={{ textDecoration: "none", color: "white" }}>
-          {<img style={{ display: "none" }} src={post.postImages[0].image} alt={post.title} />}
+          {<img style={{ display: "none" }} src={post.postImages[0]?.image} alt={post.title} />}
           <Box
             sx={{
               position: "absolute",

@@ -14,7 +14,7 @@ const updatePost = async (params) => {
   };
   console.log(updateRequest);
 
-  return await axios.put(`http://localhost:8081/api/users/${body.id}`, body, config);
+  return await axios.put(`http://localhost:8081/api/users`, body, config);
 };
 
 export default async function handler(req, res) {
@@ -23,7 +23,10 @@ export default async function handler(req, res) {
     const result = await updatePost({ body, auth: req.headers.authorization });
 
     console.log(result);
-    res.status(result.status).json({});
+    const user = {
+      ...result.data,
+    };
+    res.status(result.status).json({ user });
     return;
   }
   res.status(200).json({});

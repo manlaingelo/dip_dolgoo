@@ -21,7 +21,6 @@ const Register = () => {
   const [message, setMessage] = useState("");
 
   const register = async (values) => {
-    console.log("!!!Sdaaa");
     var myHeaders = new Headers({
       "Access-Control-Allow-Origin": "*",
     });
@@ -40,7 +39,6 @@ const Register = () => {
 
     fetch("/api/register", requestOptions)
       .then((response) => {
-        console.log(response);
         if (response.status === 201) {
           setMessage("Амжилттай бүртгэл хийгдлээ.");
         }
@@ -60,7 +58,6 @@ const Register = () => {
       password: Yup.string().max(255).required("Заавал оруулах"),
     }),
     onSubmit: (values) => {
-      console.log(values);
       register(values);
     },
   });

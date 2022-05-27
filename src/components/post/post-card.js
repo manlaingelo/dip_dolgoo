@@ -24,7 +24,7 @@ export const PostCard = ({ post, ...rest }) => (
       component="img"
       height="250"
       sx={{ width: 250, minWidth: 250 }}
-      image={post.postImages[0].image}
+      image={post.postImages[0]?.image}
       alt={`listing ${post.title}`}
     />
     <Grid>

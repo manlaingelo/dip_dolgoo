@@ -68,7 +68,6 @@ const Landing = ({ data }) => {
   };
 
   const getPosts = (params) => {
-    console.log(params);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -83,7 +82,6 @@ const Landing = ({ data }) => {
     fetch("/api/posts/get", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const { posts } = data;
         setPosts(posts.content);
         setPageCount(posts.totalPages);

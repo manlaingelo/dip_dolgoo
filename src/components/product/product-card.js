@@ -40,7 +40,6 @@ const MoreMenu = (props) => {
   const [isOpenUpdate, setIsOpenUpdate] = useState(false);
 
   const handleDelete = () => {
-    console.log("delete");
     const token = localStorage.getItem("accessToken");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -57,10 +56,8 @@ const MoreMenu = (props) => {
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/posts/delete", requestOptions)
       .then((response) => {
-        console.log(response);
         if (response.status === 204) {
           console.log("DELETED!!!");
           setIsOpenDelete(false);
@@ -71,7 +68,6 @@ const MoreMenu = (props) => {
   };
 
   const handleUpdate = () => {
-    console.log("update", product);
     const token = localStorage.getItem("accessToken");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -88,10 +84,8 @@ const MoreMenu = (props) => {
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/posts/update", requestOptions)
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
           console.log("UPDATED");
           setIsOpenUpdate(false);

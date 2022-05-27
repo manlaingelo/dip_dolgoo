@@ -40,7 +40,6 @@ export const CustomerListResults = ({ setSelectedCustomerId, refresh, ...rest })
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
-    console.log(page, searchValue);
     const setterData = {
       page,
       searchValue,
@@ -54,14 +53,13 @@ export const CustomerListResults = ({ setSelectedCustomerId, refresh, ...rest })
       body: raw,
     };
 
-    // console.log(post);
     fetch("/api/customers/get", requestOptions)
       .then((response) => response.json())
       .then((data) => {
         const { users } = data;
         setCustomers(users.content);
         setTotalElements(users.totalElements);
-        console.log(users);
+        users;
       })
       .catch((error) => console.log("error", error));
   };
@@ -101,8 +99,6 @@ export const CustomerListResults = ({ setSelectedCustomerId, refresh, ...rest })
       );
     }
 
-    console.log(newSelectedCustomerIds);
-
     setSelectedCustomerIds(newSelectedCustomerIds);
     setSelectedCustomerId(newSelectedCustomerIds[0]);
   };
@@ -140,7 +136,7 @@ export const CustomerListResults = ({ setSelectedCustomerId, refresh, ...rest })
                 variant="outlined"
                 value={searchValue}
                 onChange={(event) => {
-                  setSearchValue(event.target.value), console.log(event.target.value);
+                  setSearchValue(event.target.value);
                 }}
               />
             </Box>
