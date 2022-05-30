@@ -7,7 +7,6 @@ const mediaByIndex = (idx) => {
 };
 
 const EmblaCarousel = ({ slides }) => {
-  console.log(slides);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mainViewportRef, embla] = useEmblaCarousel({ skipSnaps: false });
   const [thumbViewportRef, emblaThumbs] = useEmblaCarousel({
@@ -41,13 +40,13 @@ const EmblaCarousel = ({ slides }) => {
       <div className="embla" style={{ backgroundColor: "white" }}>
         <div className="embla__viewport" ref={mainViewportRef}>
           <div className="embla__container">
-            {slides.map((imgSrc, index) => (
+            {slides.map((data, index) => (
               <div className="embla__slide" key={index}>
                 <div className="embla__slide__inner">
                   <img
                     className="embla__slide__img"
-                    // src={imgSrc || `https://source.unsplash.com/random/301x301/`}
-                    src={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
+                    src={data?.image || `https://source.unsplash.com/random/301x301/`}
+                    // src={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
                     alt="A cool cat."
                   />
                 </div>
@@ -60,12 +59,12 @@ const EmblaCarousel = ({ slides }) => {
       <div className="embla embla--thumb">
         <div className="embla__viewport" ref={thumbViewportRef}>
           <div className="embla__container embla__container--thumb">
-            {slides.map((imgSrc, index) => (
+            {slides.map((data, index) => (
               <Thumb
                 onClick={() => onThumbClick(index)}
                 selected={index === selectedIndex}
-                // imgSrc={imgSrc || `https://source.unsplash.com/random/301x301/`}
-                imgSrc={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
+                imgSrc={data?.image || `https://source.unsplash.com/random/301x301/`}
+                // imgSrc={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
                 key={index}
               />
             ))}

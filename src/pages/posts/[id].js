@@ -17,22 +17,39 @@ import EmblaCarousel from "../../components/post/embla-carousel";
 
 const SLIDE_COUNT = 10;
 const slides = Array.from(Array(SLIDE_COUNT).keys());
+export async function getServerSideProps(context) {
+  const { id } = context.params;
+  // console.log(id)
+  // Fetch data from external API
+  const apiURL = `http://localhost:8081/api/posts/${id}`;
+  const res = await fetch(apiURL, {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  const data = await res.json();
 
-const PostDetail = () => {
+  // Pass data to the page via props
+  return { props: { data } };
+}
+
+const PostDetail = ({ data }) => {
+  // console.log(data)
   const router = useRouter();
-  const [postData, setPostData] = useState();
+  const [postData, setPostData] = useState(data);
   const [loading, setLoading] = useState(false);
   const { id } = router.query;
 
-  useEffect(() => {
-    //   todo: set true for fetch data
-    setLoading(false);
-    const currentPost = products.filter((post) => post.id == id);
-    setPostData(products[0]);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, [id]);
+  // useEffect(() => {
+  //   //   todo: set true for fetch data
+  //   setLoading(false);
+  //   const currentPost = products.filter((post) => post.id == id);
+  //   setPostData(products[0]);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, [id]);
 
   return (
     <>
@@ -83,7 +100,7 @@ const PostDetail = () => {
             </Grid>
             <Grid item xs={12} md={7}>
               <Paper sx={{ p: 3 }}>
-                <EmblaCarousel slides={slides} />
+                <EmblaCarousel slides={postData?.postImages} />
                 <Box sx={{ mt: 2 }}>
                   <h2>Дэлгэрэнгүй</h2>
                   <Typography variant="body2" color="text.secondary" mt={3}>
