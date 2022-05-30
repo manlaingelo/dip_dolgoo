@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Thumb } from "./thumb";
 
-const mediaByIndex =(idx)=> {
-    return 'https://source.unsplash.com/random/301x301/'
-}
-
+const mediaByIndex = (idx) => {
+  return "https://source.unsplash.com/random/301x301/";
+};
 
 const EmblaCarousel = ({ slides }) => {
+  console.log(slides);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mainViewportRef, embla] = useEmblaCarousel({ skipSnaps: false });
   const [thumbViewportRef, emblaThumbs] = useEmblaCarousel({
@@ -38,13 +38,18 @@ const EmblaCarousel = ({ slides }) => {
 
   return (
     <>
-      <div className="embla">
+      <div className="embla" style={{ backgroundColor: "white" }}>
         <div className="embla__viewport" ref={mainViewportRef}>
           <div className="embla__container">
-            {slides.map((index) => (
+            {slides.map((imgSrc, index) => (
               <div className="embla__slide" key={index}>
                 <div className="embla__slide__inner">
-                  <img className="embla__slide__img" src={mediaByIndex(index)} alt="A cool cat." />
+                  <img
+                    className="embla__slide__img"
+                    // src={imgSrc || `https://source.unsplash.com/random/301x301/`}
+                    src={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
+                    alt="A cool cat."
+                  />
                 </div>
               </div>
             ))}
@@ -55,11 +60,12 @@ const EmblaCarousel = ({ slides }) => {
       <div className="embla embla--thumb">
         <div className="embla__viewport" ref={thumbViewportRef}>
           <div className="embla__container embla__container--thumb">
-            {slides.map((index) => (
+            {slides.map((imgSrc, index) => (
               <Thumb
                 onClick={() => onThumbClick(index)}
                 selected={index === selectedIndex}
-                imgSrc={mediaByIndex(index)}
+                // imgSrc={imgSrc || `https://source.unsplash.com/random/301x301/`}
+                imgSrc={`https://source.unsplash.com/random?sig=${imgSrc}/301x301/`}
                 key={index}
               />
             ))}

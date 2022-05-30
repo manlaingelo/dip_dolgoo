@@ -18,7 +18,7 @@ function Navbar() {
 
             <NextLink href="/" passHref>
               <Typography
-                component="h2"
+                component="h5"
                 variant="h5"
                 color="inherit"
                 sx={{
@@ -29,7 +29,9 @@ function Navbar() {
                 }}
               >
                 <Logo />
-                <span style={{ marginY: "auto", marginLeft: "1rem" }}>RealEstate</span>
+                <span style={{ marginY: "auto", marginLeft: "1rem", fontSize: "1rem", lineHeight: '1' }}>
+                  Үл хөдлөх хөрөнгө <br /> зуучлалын веб
+                </span>
               </Typography>
             </NextLink>
             {/* <IconButton>
